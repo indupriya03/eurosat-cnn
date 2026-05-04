@@ -1,2 +1,5 @@
-# eurosat-cnn
-Deep learning-based image classification on the EuroSAT dataset using Convolutional Neural Networks (CNNs) with PyTorch.
+# EuroSAT CNN Classification
+
+This project uses a CNN to classify satellite images from the EuroSAT dataset.
+
+Work in progress...

@@ -9,7 +9,7 @@
 | | |
 |---|---|
 | 🎯 **92.2% Test Accuracy** | CNN trained from scratch on 27,000 satellite images |
-| 🖥️ **Web UI** | Dark-themed drag & drop interface — no Swagger needed |
+| 🖥️ **Web UI** | Dark-themed drag & drop interface with GradCAM visualisation |
 | 🔍 **Explainable AI** | GradCAM visualisations show *why* the model predicts each class |
 | 🚀 **Production API** | FastAPI REST API with Swagger UI — deployable, not just a notebook |
 | 📊 **No Data Leakage** | Mean/std computed on train set only, after stratified split |

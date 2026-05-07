@@ -1,0 +1,31 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+.env/
+eurosat/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Dataset
+data/raw/
+
+# Trained models
+*.pth
+
+# Logs
+*.log
+
+# Outputs
+outputs/gradcam/
+outputs/*.png
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db

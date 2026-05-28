@@ -5,9 +5,10 @@ import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from contextlib import asynccontextmanager
 from PIL import Image
 from fastapi import FastAPI, UploadFile, File
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 from torchvision import transforms
 from src.model import EurosatCNN
 from src.gradcam import GradCAM
@@ -15,35 +16,42 @@ from src.utils import load_model
 from src.dataset import load_stats
 from config import CLASSES, DEVICE, MODEL_PATH
 
-from fastapi.responses import FileResponse
 
+# ── Global references (populated at startup) ─────────────
+device    = torch.device(DEVICE)
+MEAN, STD = load_stats()
+model     = None
+gradcam   = None
+preprocess = None
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # ── Startup: load model once ─────────────────────────
+    global model, gradcam, preprocess
+    model = EurosatCNN(num_classes=len(CLASSES)).to(device)
+    model = load_model(model, MODEL_PATH, device)
+    gradcam = GradCAM(model, target_layer=model.block3[3])
+    preprocess = transforms.Compose([
+        transforms.Resize((64, 64)),
+        transforms.ToTensor(),
+        transforms.Normalize(MEAN, STD),
+    ])
+    yield
+    # ── Shutdown (nothing to clean up) ───────────────────
 
 
 # ── Setup ────────────────────────────────────────────────
 app = FastAPI(
     title="EuroSAT Satellite Classifier",
     description="Upload a satellite image → get land-use class + GradCAM explanation",
-    version="2.0.0"
+    version="2.0.0",
+    lifespan=lifespan,
 )
 
 @app.get("/ui", response_class=FileResponse)
 def frontend():
     return FileResponse("templates/index.html")
-
-device    = torch.device(DEVICE)
-MEAN, STD = load_stats()
-
-# ── Load model once at startup ───────────────────────────
-model   = EurosatCNN(num_classes=len(CLASSES)).to(device)
-model   = load_model(model, MODEL_PATH, device)
-gradcam = GradCAM(model, target_layer=model.block3[3])
-
-# ── Preprocessing ────────────────────────────────────────
-preprocess = transforms.Compose([
-    transforms.Resize((64, 64)),
-    transforms.ToTensor(),
-    transforms.Normalize(MEAN, STD),
-])
 
 # ── Helper: fig → base64 ─────────────────────────────────
 def fig_to_base64(fig) -> str:

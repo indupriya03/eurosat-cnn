@@ -1,7 +1,6 @@
 
 # 🛰️ EuroSAT-CNN — Satellite Land-Use Classifier
 
-<<<<<<< HEAD
 [![EuroSAT CNN CI/CD](https://github.com/indupriya03/eurosat-cnn/actions/workflows/ci.yml/badge.svg)](https://github.com/indupriya03/eurosat-cnn/actions/workflows/ci.yml)
 =======
 

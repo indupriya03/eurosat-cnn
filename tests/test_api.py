@@ -2,18 +2,19 @@ import io
 import pytest
 from fastapi.testclient import TestClient
 from PIL import Image
-from app import app
+@pytest.fixture(scope="module")
+def client():
+    from app import app
+    return TestClient(app)
 
-client = TestClient(app)
 
-
-def test_root_health():
+def test_root_health(client):
     r = client.get("/")
     assert r.status_code == 200
     assert "running" in r.json()["message"].lower()
 
 
-def test_get_classes():
+def test_get_classes(client):
     r = client.get("/classes")
     assert r.status_code == 200
     data = r.json()
@@ -29,7 +30,7 @@ def make_dummy_image_bytes(size=(64, 64)):
     return buf
 
 
-def test_predict_returns_valid_response():
+def test_predict_returns_valid_response(client):
     buf = make_dummy_image_bytes()
     r = client.post("/predict", files={"file": ("test.jpg", buf, "image/jpeg")})
     assert r.status_code == 200
@@ -41,7 +42,7 @@ def test_predict_returns_valid_response():
     assert len(data["all_scores"]) == 10
 
 
-def test_predict_confidence_sums_to_one():
+def test_predict_confidence_sums_to_one(client):
     buf = make_dummy_image_bytes()
     r = client.post("/predict", files={"file": ("test.jpg", buf, "image/jpeg")})
     scores = r.json()["all_scores"]
@@ -49,7 +50,7 @@ def test_predict_confidence_sums_to_one():
     assert abs(total - 1.0) < 0.01  # softmax must sum to ~1
 
 
-def test_predict_top_class_matches_confidence():
+def test_predict_top_class_matches_confidence(client):
     buf = make_dummy_image_bytes()
     r = client.post("/predict", files={"file": ("test.jpg", buf, "image/jpeg")})
     data = r.json()
@@ -59,7 +60,7 @@ def test_predict_top_class_matches_confidence():
     assert abs(reported_confidence - score_for_top) < 0.001
 
 
-def test_predict_invalid_file_returns_400():
+def test_predict_invalid_file_returns_400(client):
     r = client.post(
         "/predict",
         files={"file": ("bad.txt", io.BytesIO(b"not an image"), "text/plain")},
@@ -67,7 +68,7 @@ def test_predict_invalid_file_returns_400():
     assert r.status_code == 400
 
 
-def test_explain_returns_png():
+def test_explain_returns_png(client):
     buf = make_dummy_image_bytes()
     r = client.post(
         "/predict/explain/view",

@@ -1,7 +1,9 @@
 
 # 🛰️ EuroSAT-CNN — Satellite Land-Use Classifier
 
+<<<<<<< HEAD
 [![EuroSAT CNN CI/CD](https://github.com/indupriya03/eurosat-cnn/actions/workflows/ci.yml/badge.svg)](https://github.com/indupriya03/eurosat-cnn/actions/workflows/ci.yml)
+=======
 
 > A production-grade deep learning pipeline that classifies satellite imagery into 10 land-use categories with **92.2% test accuracy**, built entirely from scratch — no pretrained weights.
 
@@ -19,6 +21,7 @@
 | ⚖️ **Stratified Splits** | sklearn stratified 70/15/15 split — class balance preserved across all sets |
 | 🧹 **Clean Pipeline** | Single `pipeline.py` entry point — runs everything end to end |
 | ⚙️ **Config Driven** | All paths, hyperparameters, and constants centralised in `config.py` |
+| 🔁 **CI/CD Pipeline** | GitHub Actions — auto lint (ruff), pytest (12 tests), Docker build & push to GHCR |
 
 ---
 
@@ -29,6 +32,19 @@ eurosat-cnn/
 ├── config.py                   # single source of truth — paths, hyperparams, seed
 ├── pipeline.py                 # end to end runner
 ├── app.py                      # FastAPI REST API + UI server
+├── conftest.py                 # pytest: patches load_model with random weights for CI
+├── ruff.toml                   # linter config (line-length=100, excludes notebooks/)
+├── Dockerfile                  # container image — python:3.10-slim + app
+├── .dockerignore               # excludes data/, outputs/, notebooks/ from build context
+├── requirements.txt
+│
+├── .github/
+│   └── workflows/
+│       └── ci.yml              # CI/CD — lint + test → Docker build & push to GHCR
+│
+├── tests/
+│   ├── test_api.py             # 7 FastAPI endpoint tests (health, predict, GradCAM)
+│   └── test_model.py           # 5 model architecture tests (shape, logits, block3)
 │
 ├── data/
 │   └── raw/                    # EuroSAT dataset (10 class folders)
@@ -49,15 +65,13 @@ eurosat-cnn/
 ├── templates/
 │   └── index.html              # web UI frontend
 │
-├── src/
-│   ├── dataset.py              # split + stats + transforms + dataloader
-│   ├── model.py                # EurosatCNN architecture
-│   ├── train.py                # training loop
-│   ├── evaluate.py             # metrics + confusion matrix
-│   ├── gradcam.py              # GradCAM implementation
-│   └── utils.py                # shared helpers
-│
-└── requirements.txt
+└── src/
+    ├── dataset.py              # split + stats + transforms + dataloader
+    ├── model.py                # EurosatCNN architecture
+    ├── train.py                # training loop
+    ├── evaluate.py             # metrics + confusion matrix
+    ├── gradcam.py              # GradCAM implementation
+    └── utils.py                # shared helpers
 ```
 
 ---
@@ -139,6 +153,22 @@ Original          GradCAM Heatmap       Overlay
                    focused here         learned correct
                                         features
 ```
+
+---
+
+## 🔁 CI/CD Pipeline
+
+Every push to `main` triggers a two-job GitHub Actions workflow:
+
+| Job | What it does |
+|-----|-------------|
+| **Lint & Test** | Runs `ruff check` on all source files, then `pytest` (12 tests) with a mocked model so no checkpoint is needed in CI |
+| **Docker Build & Push** | Builds the Docker image and pushes to GitHub Container Registry (`ghcr.io/indupriya03/eurosat-cnn:latest`) — only runs if Lint & Test passes |
+
+**Key design decisions:**
+- Model loading moved into FastAPI `lifespan` startup — import-safe, patchable in tests
+- `conftest.py` patches `load_model` with random weights so API tests run without `best_model.pth`
+- Docker job only triggers on `main` branch pushes, not PRs
 
 ---
 
@@ -284,6 +314,8 @@ Avoided              → RandomGrayscale (loses spectral info)
 | Web UI | Vanilla HTML / CSS / JS |
 | Visualisation | Matplotlib, Seaborn |
 | Environment | Python 3.10+ |
+| CI/CD | GitHub Actions — ruff, pytest, Docker |
+| Container | Docker → GHCR (`ghcr.io/indupriya03/eurosat-cnn`) |
 
 ---
 

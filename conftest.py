@@ -18,9 +18,15 @@ def _mock_load_model(model, path, device):
     model.eval()
     return model
 
+_p1 = patch("src.utils.load_model", side_effect=_mock_load_model)
+_p2 = patch("app.load_model",       side_effect=_mock_load_model)
+_p1.start()
+_p2.start()
 
-@pytest.fixture(autouse=True)
-def patch_model_loading():
-    with patch("src.utils.load_model", side_effect=_mock_load_model):
-        with patch("app.load_model", side_effect=_mock_load_model):
-            yield
+
+def pytest_sessionfinish(session, exitstatus):
+    for p in [_p1, _p2]:
+        try:
+            p.stop()
+        except RuntimeError:
+            pass

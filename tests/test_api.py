@@ -2,10 +2,13 @@ import io
 import pytest
 from fastapi.testclient import TestClient
 from PIL import Image
+
 @pytest.fixture(scope="module")
 def client():
     from app import app
-    return TestClient(app)
+    with TestClient(app, raise_server_exceptions=True) as c:  # ← context manager triggers lifespan
+        yield c
+
 
 
 def test_root_health(client):

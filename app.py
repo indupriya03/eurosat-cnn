@@ -17,26 +17,27 @@ from src.dataset import load_stats
 from config import CLASSES, DEVICE, MODEL_PATH
 
 
-# ── Global references (populated at startup) ─────────────
+# ── Module-level setup (no model weights needed) ─────────
 device    = torch.device(DEVICE)
 MEAN, STD = load_stats()
 model     = None
 gradcam   = None
-preprocess = None
+
+# preprocess has no dependency on weights — safe at import time
+preprocess = transforms.Compose([
+    transforms.Resize((64, 64)),
+    transforms.ToTensor(),
+    transforms.Normalize(MEAN, STD),
+])
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # ── Startup: load model once ─────────────────────────
-    global model, gradcam, preprocess
+    # ── Startup: load model weights once ─────────────────
+    global model, gradcam
     model = EurosatCNN(num_classes=len(CLASSES)).to(device)
     model = load_model(model, MODEL_PATH, device)
     gradcam = GradCAM(model, target_layer=model.block3[3])
-    preprocess = transforms.Compose([
-        transforms.Resize((64, 64)),
-        transforms.ToTensor(),
-        transforms.Normalize(MEAN, STD),
-    ])
     yield
     # ── Shutdown (nothing to clean up) ───────────────────
 

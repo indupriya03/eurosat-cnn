@@ -1,5 +1,7 @@
-[![EuroSAT CNN CI/CD](https://github.com/indupriya03/eurosat-cnn/actions/workflows/ci.yml/badge.svg)](https://github.com/indupriya03/eurosat-cnn/actions/workflows/ci.yml)
+
 # 🛰️ EuroSAT-CNN — Satellite Land-Use Classifier
+
+[![EuroSAT CNN CI/CD](https://github.com/indupriya03/eurosat-cnn/actions/workflows/ci.yml/badge.svg)](https://github.com/indupriya03/eurosat-cnn/actions/workflows/ci.yml)
 
 > A production-grade deep learning pipeline that classifies satellite imagery into 10 land-use categories with **92.2% test accuracy**, built entirely from scratch — no pretrained weights.
 

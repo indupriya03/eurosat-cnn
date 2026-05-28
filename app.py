@@ -7,7 +7,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from PIL import Image
 from fastapi import FastAPI, UploadFile, File
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from torchvision import transforms
 from src.model import EurosatCNN
 from src.gradcam import GradCAM
@@ -15,7 +15,6 @@ from src.utils import load_model
 from src.dataset import load_stats
 from config import CLASSES, DEVICE, MODEL_PATH
 
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
 
@@ -27,12 +26,9 @@ app = FastAPI(
     version="2.0.0"
 )
 
-# after app = FastAPI(...)
-
-
 @app.get("/ui", response_class=FileResponse)
 def frontend():
-    return "templates/index.html"
+    return FileResponse("templates/index.html")
 
 device    = torch.device(DEVICE)
 MEAN, STD = load_stats()
@@ -95,9 +91,6 @@ async def predict(file: UploadFile = File(...)):
     }
 
 
-from fastapi.responses import StreamingResponse
-import io
-
 @app.post("/predict/explain/view")
 async def predict_explain_view(file: UploadFile = File(...)):
     contents = await file.read()
@@ -121,9 +114,17 @@ async def predict_explain_view(file: UploadFile = File(...)):
 
     # plot
     fig, axes = plt.subplots(1, 3, figsize=(10, 3))
-    axes[0].imshow(img_array);             axes[0].set_title("Original",                   fontsize=8); axes[0].axis("off")
-    axes[1].imshow(cam_image, cmap="jet"); axes[1].set_title("GradCAM",                    fontsize=8); axes[1].axis("off")
-    axes[2].imshow(overlay);               axes[2].set_title(f"Pred: {CLASSES[pred_idx]}", fontsize=8); axes[2].axis("off")
+    axes[0].imshow(img_array)
+    axes[0].set_title("Original", fontsize=8)
+    axes[0].axis("off")
+
+    axes[1].imshow(cam_image, cmap="jet")
+    axes[1].set_title("GradCAM", fontsize=8)
+    axes[1].axis("off")
+
+    axes[2].imshow(overlay)
+    axes[2].set_title(f"Pred: {CLASSES[pred_idx]}", fontsize=8)
+    axes[2].axis("off")
     plt.tight_layout()
 
     # return as PNG directly

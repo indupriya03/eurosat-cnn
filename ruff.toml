@@ -1,0 +1,2 @@
+exclude = ["notebooks/", "outputs/"]
+line-length = 100

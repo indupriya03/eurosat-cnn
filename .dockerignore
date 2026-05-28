@@ -1,0 +1,32 @@
+# Git
+.git
+.gitignore
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environment
+venv/
+env/
+.env
+
+# Jupyter notebooks
+notebooks/
+*.ipynb
+
+# Large data files — not needed at runtime
+data/
+outputs/
+
+# CI/CD files
+.github/
+
+# Tests
+tests/
+
+# README
+*.md

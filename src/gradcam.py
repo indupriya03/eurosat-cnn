@@ -73,9 +73,17 @@ def visualise_gradcam(image_path, model, gradcam, classes, save_path=None):
     overlay   = 0.5 * img_array + 0.5 * heatmap
 
     fig, axes = plt.subplots(1, 3, figsize=(10, 3))
-    axes[0].imshow(img_array);              axes[0].set_title("Original");           axes[0].axis("off")
-    axes[1].imshow(cam_array, cmap="jet"); axes[1].set_title("GradCAM");            axes[1].axis("off")
-    axes[2].imshow(overlay);               axes[2].set_title(f"Pred: {pred_class}"); axes[2].axis("off")
+    axes[0].imshow(img_array)
+    axes[0].set_title("Original")
+    axes[0].axis("off")
+
+    axes[1].imshow(cam_array, cmap="jet")
+    axes[1].set_title("GradCAM")
+    axes[1].axis("off")
+
+    axes[2].imshow(overlay)
+    axes[2].set_title(f"Pred: {pred_class}")
+    axes[2].axis("off")
 
     plt.tight_layout()
     if save_path:

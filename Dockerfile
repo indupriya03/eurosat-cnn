@@ -16,6 +16,7 @@ RUN pip install --no-cache-dir --timeout 300 -r requirements.txt
 COPY src/ ./src/
 COPY templates/ ./templates/
 COPY app.py config.py ./
+COPY outputs/ ./outputs/
 
 # ── Create outputs folder ─────────────────────────────────────
 # Your model weights go here at runtime (not committed to git)

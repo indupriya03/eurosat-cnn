@@ -20,7 +20,7 @@ notebooks/
 
 # Large data files — not needed at runtime
 data/
-outputs/
+
 
 # CI/CD files
 .github/

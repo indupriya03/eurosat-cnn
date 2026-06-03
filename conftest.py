@@ -22,10 +22,12 @@ _p1 = patch("src.utils.load_model", side_effect=_mock_load_model)
 _p2 = patch("app.load_model",       side_effect=_mock_load_model)
 _p1.start()
 _p2.start()
+_p3 = patch("app.ensure_model_downloaded")
+_p3.start()
 
 
 def pytest_sessionfinish(session, exitstatus):
-    for p in [_p1, _p2]:
+    for p in [_p1, _p2, _p3]:
         try:
             p.stop()
         except RuntimeError:

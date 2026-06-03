@@ -69,3 +69,6 @@ jobs:
           tags: |
             ghcr.io/indupriya03/eurosat-cnn:latest
             ghcr.io/indupriya03/eurosat-cnn:${{ github.sha }}
+            
+      - name: Trigger Render Deploy
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}

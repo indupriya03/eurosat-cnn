@@ -2,6 +2,8 @@
 # 🛰️ EuroSAT-CNN — Satellite Land-Use Classifier
 
 [![EuroSAT CNN CI/CD](https://github.com/indupriya03/eurosat-cnn/actions/workflows/ci.yml/badge.svg)](https://github.com/indupriya03/eurosat-cnn/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-brightgreen)](https://eurosat-cnn-latest-2.onrender.com/ui)
+[![Model on Hugging Face](https://img.shields.io/badge/Model-Hugging%20Face-yellow)](https://huggingface.co/indupriyachidambararaj/eurosat-cnn)
 =======
 
 > A production-grade deep learning pipeline that classifies satellite imagery into 10 land-use categories with **92.2% test accuracy**, built entirely from scratch — no pretrained weights.
@@ -170,6 +172,18 @@ Every push to `main` triggers a two-job GitHub Actions workflow:
 - Docker job only triggers on `main` branch pushes, not PRs
 
 ---
+
+## 🌐 Live Demo
+
+Try the deployed app — no setup needed:
+
+| | |
+|---|---|
+| 🖥️ **Web UI** | https://eurosat-cnn-latest-2.onrender.com/ui |
+| 📡 **API Docs** | https://eurosat-cnn-latest-2.onrender.com/docs |
+| 🤗 **Model Weights** | https://huggingface.co/indupriyachidambararaj/eurosat-cnn |
+
+> Note: Hosted on Render free tier — may take 30–60 seconds to wake up on first visit.
 
 ## 🚀 Quickstart
 

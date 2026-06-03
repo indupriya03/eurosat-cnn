@@ -13,7 +13,7 @@ STATS_PATH   = os.path.join(OUTPUTS_DIR, "dataset_stats.json")
 MODEL_PATH   = os.path.join(OUTPUTS_DIR, "best_model.pth")
 GRADCAM_DIR  = os.path.join(OUTPUTS_DIR, "gradcam")
 
-HF_MODEL_URL = "https://huggingface.co/indupriya03/eurosat-cnn/resolve/main/best_model.pth"
+HF_MODEL_URL = "https://huggingface.co/indupriyachidambararaj/eurosat-cnn/resolve/main/best_model.pth"
 
 def ensure_model_downloaded():
     if not os.path.exists(MODEL_PATH):

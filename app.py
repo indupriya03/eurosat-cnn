@@ -14,7 +14,7 @@ from src.model import EurosatCNN
 from src.gradcam import GradCAM
 from src.utils import load_model
 from src.dataset import load_stats
-from config import CLASSES, DEVICE, MODEL_PATH
+from config import CLASSES, DEVICE, MODEL_PATH, ensure_model_downloaded
 
 
 # ── Module-level setup (no model weights needed) ─────────
@@ -35,6 +35,7 @@ preprocess = transforms.Compose([
 async def lifespan(app: FastAPI):
     # ── Startup: load model weights once ─────────────────
     global model, gradcam
+    ensure_model_downloaded()
     model = EurosatCNN(num_classes=len(CLASSES)).to(device)
     model = load_model(model, MODEL_PATH, device)
     gradcam = GradCAM(model, target_layer=model.block3[3])

@@ -1,6 +1,8 @@
 # config.py
 import os
 import torch
+import urllib.request
+
 # project root
 ROOT_DIR     = os.path.dirname(os.path.abspath(__file__))
 
@@ -10,6 +12,15 @@ OUTPUTS_DIR  = os.path.join(ROOT_DIR, "outputs")
 STATS_PATH   = os.path.join(OUTPUTS_DIR, "dataset_stats.json")
 MODEL_PATH   = os.path.join(OUTPUTS_DIR, "best_model.pth")
 GRADCAM_DIR  = os.path.join(OUTPUTS_DIR, "gradcam")
+
+HF_MODEL_URL = "https://huggingface.co/indupriya03/eurosat-cnn/resolve/main/best_model.pth"
+
+def ensure_model_downloaded():
+    if not os.path.exists(MODEL_PATH):
+        os.makedirs(OUTPUTS_DIR, exist_ok=True)
+        print("Downloading model from Hugging Face...")
+        urllib.request.urlretrieve(HF_MODEL_URL, MODEL_PATH)
+        print("Model downloaded.")
 
 # model config
 NUM_CLASSES  = 10

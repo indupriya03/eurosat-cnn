@@ -1,5 +1,4 @@
 import io
-import base64
 import torch
 import numpy as np
 import matplotlib
@@ -55,14 +54,6 @@ app = FastAPI(
 def frontend():
     return FileResponse("templates/index.html")
 
-# ── Helper: fig → base64 ─────────────────────────────────
-def fig_to_base64(fig) -> str:
-    buf     = io.BytesIO()
-    fig.savefig(buf, format="png", dpi=150, bbox_inches="tight")
-    buf.seek(0)
-    encoded = base64.b64encode(buf.read()).decode("utf-8")
-    plt.close(fig)
-    return encoded
 
 # ── Helper: run inference ────────────────────────────────
 def run_inference(image: Image.Image):
